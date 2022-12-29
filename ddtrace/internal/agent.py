@@ -1,4 +1,5 @@
 import os
+import socket
 from typing import Union
 
 from ddtrace.internal import compat
@@ -16,9 +17,22 @@ DEFAULT_TIMEOUT = 2.0
 ConnectionType = Union[compat.httplib.HTTPSConnection, compat.httplib.HTTPConnection, UDSHTTPConnection]
 
 
+# This method returns if a hostname is an IPv6 address
+def is_ipv6_hostname(hostname):
+    # type: (str) -> bool
+    if not isinstance(hostname, str):
+        return False
+    try:
+        socket.inet_pton(socket.AF_INET6, hostname)
+        return True
+    except socket.error:  # not a valid address
+        return False
+
+
 def get_hostname():
     # type: () -> str
-    return os.environ.get("DD_AGENT_HOST", os.environ.get("DATADOG_TRACE_AGENT_HOSTNAME", DEFAULT_HOSTNAME))
+    hostname = os.environ.get("DD_AGENT_HOST", os.environ.get("DATADOG_TRACE_AGENT_HOSTNAME", DEFAULT_HOSTNAME))
+    return "[{}]".format(hostname) if is_ipv6_hostname(hostname) else hostname
 
 
 def get_trace_port():
