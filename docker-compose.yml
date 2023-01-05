@@ -37,7 +37,7 @@ services:
     redis:
         image: redis:4.0-alpine
         ports:
-            - "127.0.0.1:6379:6379"
+            - "127.0.0.1:6380:6380"
     rediscluster:
         image: grokzen/redis-cluster:6.2.0
         environment:
@@ -79,7 +79,7 @@ services:
         - DD_BIND_HOST=0.0.0.0
         - DD_API_KEY=invalid_but_this_is_fine
       ports:
-        - "127.0.0.1:8126:8126"
+        - "127.0.0.1:8127:8127"
     ddagent:
         image: datadog/agent:latest
         environment:
@@ -87,13 +87,13 @@ services:
             - DD_API_KEY=invalid_key_but_this_is_fine
             - DD_APM_RECEIVER_SOCKET=/tmp/ddagent/trace.sock
         ports:
-            - "127.0.0.1:8126:8126"
+            - "127.0.0.1:8127:8127"
         volumes:
           - ddagent:/tmp/ddagent:rw
     testagent:
         image: kyleverhoog/dd-trace-test-agent
         ports:
-            - "127.0.0.1:9126:8126"
+            - "127.0.0.1:9126:8127"
         volumes:
             - ./tests/snapshots:/snapshots
         environment:
