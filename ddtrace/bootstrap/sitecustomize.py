@@ -91,10 +91,6 @@ try:
         patch = False
         opts["enabled"] = False
 
-    if hostname:
-        opts["hostname"] = hostname
-    if port:
-        opts["port"] = int(port)
     if priority_sampling:
         opts["priority_sampling"] = asbool(priority_sampling)
 
