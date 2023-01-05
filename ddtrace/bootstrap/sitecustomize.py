@@ -17,6 +17,7 @@ if os.environ.get("DD_GEVENT_PATCH_ALL", "false").lower() in ("true", "1"):
 
 from ddtrace import config  # noqa
 from ddtrace import constants
+from ddtrace.internal.agent import is_ipv6_hostname
 from ddtrace.internal.logger import get_logger  # noqa
 from ddtrace.internal.runtime.runtime_metrics import RuntimeWorker
 from ddtrace.tracer import DD_LOG_FORMAT  # noqa
@@ -73,6 +74,7 @@ try:
     # TODO: these variables are deprecated; use utils method and update our documentation
     # correct prefix should be DD_*
     hostname = os.environ.get("DD_AGENT_HOST", os.environ.get("DATADOG_TRACE_AGENT_HOSTNAME"))
+    hostname = "[{}]".format(hostname) if is_ipv6_hostname(hostname) else hostname
     port = os.environ.get("DATADOG_TRACE_AGENT_PORT")
     priority_sampling = os.environ.get("DATADOG_PRIORITY_SAMPLING")
     profiling = asbool(os.environ.get("DD_PROFILING_ENABLED", False))
@@ -90,7 +92,11 @@ try:
     else:
         patch = False
         opts["enabled"] = False
-
+    
+    if hostname:
+        opts["hostname"] = hostname
+    if port:
+        opts["port"] = int(port)
     if priority_sampling:
         opts["priority_sampling"] = asbool(priority_sampling)
 
