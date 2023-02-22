@@ -2,8 +2,9 @@
 requires = ["setuptools >= 40.6.0", "setuptools_scm[toml] >= 4", "cython"]
 build-backend = "setuptools.build_meta"
 
-[tool.setuptools_scm]
-version_scheme = "release-branch-semver"
+[project]
+name = "ddtrace-scale"
+version = "0.49.1.dev0"
 
 [tool.isort]
 force_single_line = true
